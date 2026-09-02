@@ -18,6 +18,7 @@ const Add = () =>{
       const nuevoHabito = {
         id: Date.now(),
         name: newHabit,
+        completed: false,
       }
 
       localStorage.setItem("habits", JSON.stringify([...habitsGuardados, nuevoHabito]))

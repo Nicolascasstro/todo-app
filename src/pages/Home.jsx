@@ -15,13 +15,28 @@ const Home = () =>{
   setHabits(habitsGuardados)
   }, [])
 
+  const toggleHabit = (id) => {
+    const habitsActualizados = habits.map((habit) =>
+      habit.id === id ? { ...habit, completed: !habit.completed } : habit
+    )
+    setHabits(habitsActualizados)
+    localStorage.setItem("habits", JSON.stringify(habitsActualizados))
+  }
+
     return (
-    <div className="min-h-screen bg-blue-50 Pb-24">
+    <div className="min-h-screen bg-blue-50 pb-24">
       <Header />
       <ProgressCard />
       <p className="text-xs font-semibold text-gray-400 tracking-widest px-4 mt-6 mb-2">TODAY'S HABITS</p>
         {habits.map((habit) => (
-        <HabitItem key={habit.id} icon={User} name={habit.name} streak="0 day streak" />
+        <HabitItem
+          key={habit.id}
+          icon={User}
+          name={habit.name}
+          streak="0 day streak"
+          completed={habit.completed}
+          onToggle={() => toggleHabit(habit.id)}
+        />
       ))}
       <Navbar />
     </div>  

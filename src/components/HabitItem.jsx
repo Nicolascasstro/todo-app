@@ -1,9 +1,6 @@
 import { User, CheckCircle2 } from 'lucide-react'
-import { useState } from 'react'
 
-const HabitItem = ({ icon: Icon, name , streak}) =>{
-
-    const [completed, setCompleted] = useState(false)
+const HabitItem = ({ icon: Icon, name, streak, completed, onToggle }) =>{
 
     return(
         <>
@@ -18,7 +15,7 @@ const HabitItem = ({ icon: Icon, name , streak}) =>{
                 </div>
                 </div>
                 {/* Derecha: check */}
-                <button onClick={ ()=> setCompleted(!completed)}>
+                <button onClick={onToggle}>
                     <CheckCircle2 size={45} className={completed ? "text-blue-600" : "text-gray-300"}/>
                 </button>
                 
