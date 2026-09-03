@@ -1,19 +1,28 @@
-import { Menu , CircleUser } from 'lucide-react'
+import { LogOut } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/useAuth'
+import ThemeToggle from './ThemeToggle'
 
-const Header = ()=>{
+const Header = () => {
+  const { logout } = useAuth()
+  const navigate = useNavigate()
 
-    return(
-        <>
-            <div className='flex justify-between items-center px-4 py-4 bg-white'>
-                <div className='flex items-center gap-3'>
-                    <Menu className="text-blue-600"/>
-                    <h1 className='text-xl font-bold text-blue-600' >HabitFlow</h1>
-                </div>
-                <CircleUser className="text-gray-500" size={28} />
-            </div>
-        </>
-    )
+  const handleLogout = async () => {
+    await logout()
+    navigate('/')
+  }
 
+  return (
+    <div className='flex justify-between items-center px-4 py-4 bg-white dark:bg-gray-900'>
+      <h1 className='text-xl font-bold text-blue-600 dark:text-blue-400'>HabitFlow</h1>
+      <div className="flex items-center gap-4">
+        <ThemeToggle />
+        <button onClick={handleLogout} aria-label="Log out">
+          <LogOut className="text-gray-500 dark:text-gray-400" size={22} />
+        </button>
+      </div>
+    </div>
+  )
 }
 
 export default Header

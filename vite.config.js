@@ -7,4 +7,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    // The remaining large chunk is the Firebase SDK (auth + firestore),
+    // required upfront for the auth gate — not meaningfully splittable.
+    chunkSizeWarningLimit: 850,
+  },
 })
