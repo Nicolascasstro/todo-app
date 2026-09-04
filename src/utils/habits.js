@@ -14,8 +14,8 @@ export const CATEGORIES = [
     id: 'work',
     label: 'Work',
     icon: BookOpen,
-    activeClasses: 'bg-blue-600 text-white',
-    inactiveClasses: 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400',
+    activeClasses: 'bg-indigo-600 text-white',
+    inactiveClasses: 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400',
   },
   {
     id: 'mindset',
@@ -33,8 +33,10 @@ export const CATEGORIES = [
   },
 ]
 
-export const getCategoryIcon = (categoryId) =>
-  CATEGORIES.find((category) => category.id === categoryId)?.icon || Dumbbell
+export const getCategory = (categoryId) =>
+  CATEGORIES.find((category) => category.id === categoryId) || CATEGORIES[0]
+
+export const getCategoryIcon = (categoryId) => getCategory(categoryId).icon
 
 export const formatDate = (date) => {
   const year = date.getFullYear()
@@ -45,7 +47,16 @@ export const formatDate = (date) => {
 
 export const todayKey = () => formatDate(new Date())
 
-const startOfWeek = (date) => {
+// new Date("YYYY-MM-DD") parses the string as UTC midnight, which shifts to
+// the previous local day in any timezone behind UTC. Since completedDates
+// are stored as local-date keys (see formatDate), they must be parsed back
+// as local dates too, or week/day bucketing silently drifts by a day.
+export const parseDateKey = (dateStr) => {
+  const [year, month, day] = dateStr.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
+export const startOfWeek = (date) => {
   const result = new Date(date)
   result.setHours(0, 0, 0, 0)
   const mondayOffset = (result.getDay() + 6) % 7 // 0 = Monday
@@ -72,7 +83,7 @@ const calculateDailyStreak = (dateSet) => {
 }
 
 const calculateWeeklyStreak = (completedDates) => {
-  const weekSet = new Set(completedDates.map((dateStr) => formatDate(startOfWeek(new Date(dateStr)))))
+  const weekSet = new Set(completedDates.map((dateStr) => formatDate(startOfWeek(parseDateKey(dateStr)))))
   const oneWeek = 7 * 24 * 60 * 60 * 1000
   let cursor = startOfWeek(new Date())
 
@@ -97,4 +108,17 @@ export const calculateStreak = (completedDates = [], frequency = 'Daily') => {
   }
 
   return calculateDailyStreak(new Set(completedDates))
+}
+
+// Whether a habit counts as "done" for its current period: today for a
+// Daily habit, or any day in the current Mon-Sun week for a Weekly one.
+export const isCompletedForPeriod = (completedDates = [], frequency = 'Daily') => {
+  if (completedDates.length === 0) return false
+
+  if (frequency === 'Weekly') {
+    const currentWeekKey = formatDate(startOfWeek(new Date()))
+    return completedDates.some((dateStr) => formatDate(startOfWeek(parseDateKey(dateStr))) === currentWeekKey)
+  }
+
+  return completedDates.includes(todayKey())
 }

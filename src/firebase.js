@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,7 +13,18 @@ const firebaseConfig = {
 }
 
 export const isFirebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId)
+export const isStorageConfigured = isFirebaseConfigured && Boolean(firebaseConfig.storageBucket)
 
 export const app = isFirebaseConfigured ? initializeApp(firebaseConfig) : null
 export const auth = isFirebaseConfigured ? getAuth(app) : null
-export const db = isFirebaseConfigured ? getFirestore(app) : null
+
+// A persistent local cache lets reads/writes to Firestore (and therefore
+// the habit list and toggles) keep working offline, syncing automatically
+// once the connection comes back.
+export const db = isFirebaseConfigured
+  ? initializeFirestore(app, {
+      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+    })
+  : null
+
+export const storage = isStorageConfigured ? getStorage(app) : null

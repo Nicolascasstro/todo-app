@@ -1,13 +1,14 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import Spinner from './Spinner'
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = () => {
   const { user, loading } = useAuth()
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <p className="text-gray-400 dark:text-gray-500 text-sm">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <Spinner />
       </div>
     )
   }
@@ -16,7 +17,7 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/" replace />
   }
 
-  return children
+  return <Outlet />
 }
 
 export default ProtectedRoute
