@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Eye, EyeOff } from "lucide-react"
 import { useAuth } from "../context/useAuth"
 import ThemeToggle from "../components/ThemeToggle"
+import logo from "../assets/logo.png"
 
 const friendlyError = (code) => {
   switch (code) {
@@ -139,7 +140,7 @@ const Login = () => {
         {/* Logo y título */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200 dark:shadow-none">
-            <img src="/src/assets/logo.png" alt="HabitFlow logo" className="w-full h-full object-contain rounded-2xl" />
+            <img src={logo} alt="HabitFlow logo" className="w-full h-full object-contain rounded-2xl" />
           </div>
           <h1 className="text-3xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tight">HabitFlow</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">Step into your better self.</p>
